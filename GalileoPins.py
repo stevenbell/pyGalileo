@@ -545,12 +545,13 @@ class GalileoPins:
             
             Description:
                 Used to set the value of a digital pin using Pulse Width Modulation (PWM)
+                This is only valid for digital pins 3, 5, 6, 9, 10, and 11.
             Inputs:
                 value - (int)Valid values are 0-255
             Returns: 
                 None:
             example:
-                digitalPins[13].SetValue(LOW); - sets the digital value on pin 13 to 0.
+                digitalPins[9].SetPWMValue(128) # sets the PWM on pin 9 to 50% duty cycle
             """            
             PERIOD = 1000000;
             if(((value < 0) or (value > 255))):
@@ -559,8 +560,9 @@ class GalileoPins:
             dutyCycle = int(round(((PERIOD*value)/255),0));
             if(DEBUG): print("Duty Cycle: " + str(dutyCycle) + " Value: " + str(value) + " Percentage:" + str(round((dutyCycle/PERIOD)*100 ,0)));
             
-            #we need to turn off the digital driver for this pin so the PWM drive will work
-            self._value.write("0");
+            # The digital output must be high
+            self._value.write("1");
+            self._value.seek(0);
             #self._value.close();
             #There is a bug in the 0.7.5 firmware that requires the drive value to be set to strong
             '''if(waBug075): 
